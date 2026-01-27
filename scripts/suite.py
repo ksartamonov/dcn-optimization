@@ -285,8 +285,8 @@ def default_scenarios() -> List[ScenarioSpec]:
             seed=base_seed + 150,
         ),
     ]
-    package_root = Path(__file__).resolve().parent
-    custom_specs = _discover_custom_topologies(package_root, seed=base_seed + 200)
+    project_root = Path(__file__).resolve().parent.parent
+    custom_specs = _discover_custom_topologies(project_root, seed=base_seed + 200)
     return clos_specs + fat_tree_specs + spine_specs + custom_specs
 
 

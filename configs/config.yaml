@@ -1,0 +1,50 @@
+topology:
+  # тип топологии: fat-tree, clos, spine-leaf или custom
+  type: fat-tree
+  # Параметры Fat-Tree (используются, если type = fat-tree)
+  k: 4  # число портов на коммутаторах доступа/агрегации
+  capacity_profile:
+    access: 10.0
+    aggregation: 20.0
+    core: 40.0
+  latency_profile:
+    access: 0.2
+    aggregation: 0.3
+    core: 0.4
+  # Пример настроек для spine-leaf (раскомментируйте при необходимости):
+  # leaf_count: 8
+  # spine_count: 4
+  # servers_per_leaf: 8
+  # capacity_profile:
+  #   access: 10.0
+  #   fabric: 40.0
+  # latency_profile:
+  #   access: 0.2
+  #   fabric: 0.35
+
+flows:
+  # количество потоков (пар виртуальных машин) в сценарии
+  count: 32
+  # seed для воспроизводимой генерации потоков
+  seed: 2024
+
+algorithms:
+  # список запускаемых эвристик
+  heuristics:
+    - greedy        # жадный алгоритм
+    - local_search  # локальный поиск на базе жадного решения
+    - grasp         # стохастический GRASP
+    - ga            # генетический алгоритм
+  ilp:
+    # включить ли эталонный решатель ILP (только для малых инстансов)
+    enabled: true
+    # тайм-аут PuLP/CBC в секундах
+    timeout: 600
+
+evaluation:
+  # число повторений генерации потоков (разные seed'ы)
+  repetitions: 3
+  # массив коэффициентов масштабирования нагрузки
+  load_factors: [0.4, 0.6, 0.8, 0.95]
+  # сколько k-кратчайших путей учитывать для каждого потока
+  k_paths: 5

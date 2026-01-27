@@ -1,0 +1,20 @@
+topology:
+  type: clos
+  stages: [8, 4, 2]
+  capacity: 10.0
+  latency: 0.2
+
+flows:
+  count: 32
+  seed: 2024
+
+algorithms:
+  heuristics: [greedy, local_search, grasp, ga]
+  ilp:
+    enabled: true
+    timeout: 600
+
+evaluation:
+  repetitions: 3
+  load_factors: [0.4, 0.6, 0.8, 0.95]
+  k_paths: 5

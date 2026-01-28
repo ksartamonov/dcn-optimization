@@ -14,7 +14,7 @@ import pandas as pd
 import yaml
 
 from . import heuristics, router, topology
-from .flows import Flow, generate_flows
+from .flows import Flow, flows_from_config
 
 
 @dataclass
@@ -220,9 +220,9 @@ def run_experiment(
 
     for rep in range(repetitions):
         flows_seed = base_seed + rep
-        base_flows = generate_flows(
+        base_flows = flows_from_config(
+            cfg.flows,
             list(graph.nodes),
-            cfg.flows["count"],
             seed=flows_seed,
         )
         candidates = build_candidates(graph, base_flows, k_paths)

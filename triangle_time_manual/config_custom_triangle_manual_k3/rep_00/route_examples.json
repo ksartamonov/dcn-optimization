@@ -1,0 +1,62 @@
+{
+  "greedy": {
+    "repetition": 0,
+    "load_factor": 1.0,
+    "flow_id": "flow_0",
+    "class": "custom",
+    "rate": 1.0,
+    "sla": 5.0,
+    "route": [
+      "node0",
+      "node1"
+    ]
+  },
+  "local_search": {
+    "repetition": 0,
+    "load_factor": 1.0,
+    "flow_id": "flow_0",
+    "class": "custom",
+    "rate": 1.0,
+    "sla": 5.0,
+    "route": [
+      "node0",
+      "node1"
+    ]
+  },
+  "grasp": {
+    "repetition": 0,
+    "load_factor": 1.0,
+    "flow_id": "flow_0",
+    "class": "custom",
+    "rate": 1.0,
+    "sla": 5.0,
+    "route": [
+      "node0",
+      "node1"
+    ]
+  },
+  "ga": {
+    "repetition": 0,
+    "load_factor": 1.0,
+    "flow_id": "flow_0",
+    "class": "custom",
+    "rate": 1.0,
+    "sla": 5.0,
+    "route": [
+      "node0",
+      "node1"
+    ]
+  },
+  "ilp": {
+    "repetition": 0,
+    "load_factor": 1.0,
+    "flow_id": "flow_0",
+    "class": "custom",
+    "rate": 1.0,
+    "sla": 5.0,
+    "route": [
+      "node0",
+      "node1"
+    ]
+  }
+}

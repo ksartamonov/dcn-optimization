@@ -1,0 +1,91 @@
+{
+  "topology": "custom",
+  "k_paths": 3,
+  "load_factor": 1.0,
+  "flows_in_sample": 6,
+  "algorithms": [
+    {
+      "algorithm": "ga",
+      "routes": [
+        {
+          "flow_id": "flow_0",
+          "class": "custom",
+          "source": "node0",
+          "target": "node1",
+          "path": [
+            "node0",
+            "node1"
+          ],
+          "hop_count": 1,
+          "sla_delay": 5.0,
+          "base_delay": 0.25555555555555554
+        },
+        {
+          "flow_id": "flow_1",
+          "class": "custom",
+          "source": "node0",
+          "target": "node2",
+          "path": [
+            "node0",
+            "node2"
+          ],
+          "hop_count": 1,
+          "sla_delay": 5.0,
+          "base_delay": 0.25555555555555554
+        },
+        {
+          "flow_id": "flow_2",
+          "class": "custom",
+          "source": "node1",
+          "target": "node0",
+          "path": [
+            "node1",
+            "node0"
+          ],
+          "hop_count": 1,
+          "sla_delay": 5.0,
+          "base_delay": 0.25555555555555554
+        },
+        {
+          "flow_id": "flow_3",
+          "class": "custom",
+          "source": "node1",
+          "target": "node2",
+          "path": [
+            "node1",
+            "node2"
+          ],
+          "hop_count": 1,
+          "sla_delay": 5.0,
+          "base_delay": 0.25555555555555554
+        },
+        {
+          "flow_id": "flow_4",
+          "class": "custom",
+          "source": "node2",
+          "target": "node0",
+          "path": [
+            "node2",
+            "node0"
+          ],
+          "hop_count": 1,
+          "sla_delay": 5.0,
+          "base_delay": 0.25555555555555554
+        },
+        {
+          "flow_id": "flow_5",
+          "class": "custom",
+          "source": "node2",
+          "target": "node1",
+          "path": [
+            "node2",
+            "node1"
+          ],
+          "hop_count": 1,
+          "sla_delay": 5.0,
+          "base_delay": 0.25555555555555554
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Sequence
+from typing import Dict, Iterable, List, Sequence, Any
 
 import json
 import random
@@ -105,3 +105,57 @@ def load_flows(path: Path) -> List[Flow]:
             )
         )
     return flows
+
+
+def flows_from_config(
+    flows_cfg: Dict[str, Any],
+    graph_nodes: Sequence[str],
+    *,
+    seed: int | None = None,
+    classes: Dict[str, Dict[str, float]] | None = None,
+) -> List[Flow]:
+    """
+    Возвращает набор потоков из конфигурации.
+
+    Поддерживаемые варианты:
+    1) flows.manual: список явных потоков (source/target/rate/burst/sla)
+    2) flows.path: JSON-файл с потоками (см. load_flows)
+    3) flows.count (+ seed): случайная генерация (generate_flows)
+    """
+    classes = classes or DEFAULT_CLASSES
+
+    manual = flows_cfg.get("manual")
+    if manual:
+        flows: List[Flow] = []
+        for idx, item in enumerate(manual):
+            class_name = item.get("class", "custom")
+            params = classes.get(class_name, {})
+            rate = item.get("rate", params.get("rate_mean"))
+            burst = item.get("burst", params.get("burst_mean"))
+            sla = item.get("sla", params.get("sla"))
+            if rate is None or burst is None or sla is None:
+                raise ValueError(
+                    "Manual flow must define rate, burst, sla (or class with defaults)."
+                )
+            flow_id = item.get("id", f"flow_{idx}")
+            flows.append(
+                Flow(
+                    flow_id=flow_id,
+                    source=item["source"],
+                    target=item["target"],
+                    arrival=ArrivalCurve(rate=float(rate), burst=float(burst)),
+                    sla_delay=float(sla),
+                    class_name=class_name,
+                )
+            )
+        return flows
+
+    if "path" in flows_cfg:
+        return load_flows(Path(flows_cfg["path"]))
+
+    return generate_flows(
+        graph_nodes,
+        flows_cfg["count"],
+        seed=seed,
+        classes=classes,
+    )

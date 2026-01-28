@@ -10,6 +10,7 @@ try:
     import pandas as pd  # type: ignore
 except ImportError:  # pragma: no cover
     pd = None  # type: ignore
+import yaml
 
 if __package__ in (None, ""):
     PACKAGE_ROOT = Path(__file__).resolve().parent
@@ -50,6 +51,7 @@ def run_with_timing(
     output: Path,
     include: Iterable[str] | None = None,
     *,
+    config_path: Path | None = None,
     repetitions: int = 10,
     workers: int = 1,
     k_paths_override: Sequence[int] | None = None,
@@ -62,27 +64,53 @@ def run_with_timing(
     if pd is None:  # pragma: no cover
         raise RuntimeError("Требуется pandas: pip install -r requirements.txt")
 
-    specs = suite.default_scenarios()
-    if include:
-        include_set = set(include)
-        specs = [s for s in specs if s.slug in include_set]
+    specs = []
+    base_config_from_file = None
+    if config_path is not None:
+        base_config_from_file = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+        slug = config_path.stem
+        specs = [slug]
+    else:
+        specs = suite.default_scenarios()
+        if include:
+            include_set = set(include)
+            specs = [s for s in specs if s.slug in include_set]
 
     out_root = output
     out_root.mkdir(parents=True, exist_ok=True)
     summary_frames = []
 
     for spec in specs:
-        selected_k_paths = list(k_paths_override or spec.k_paths_values)
+        if base_config_from_file is not None:
+            selected_k_paths = list(
+                k_paths_override
+                or [base_config_from_file.get("evaluation", {}).get("k_paths", 5)]
+            )
+            spec_slug = spec
+            flow_seed_base = base_config_from_file.get("flows", {}).get("seed", 0)
+        else:
+            selected_k_paths = list(k_paths_override or spec.k_paths_values)
+            spec_slug = spec.slug
+            flow_seed_base = spec.flow_seed
+
         for k_paths in selected_k_paths:
-            cfg_dir = out_root / f"{spec.slug}_k{k_paths}"
+            cfg_dir = out_root / f"{spec_slug}_k{k_paths}"
             cfg_dir.mkdir(parents=True, exist_ok=True)
 
             # Базовый конфиг на один повтор; seed корректируем для каждого rep отдельно
-            base_config = spec.build_config(
-                k_paths=k_paths,
-                repetitions=1,
-                load_factors=load_factors_override,
-            )
+            if base_config_from_file is not None:
+                base_config = dict(base_config_from_file)
+                base_config["evaluation"] = dict(base_config.get("evaluation", {}))
+                base_config["evaluation"]["k_paths"] = k_paths
+                base_config["evaluation"]["repetitions"] = 1
+                if load_factors_override is not None:
+                    base_config["evaluation"]["load_factors"] = list(load_factors_override)
+            else:
+                base_config = spec.build_config(
+                    k_paths=k_paths,
+                    repetitions=1,
+                    load_factors=load_factors_override,
+                )
             if heuristics_override is not None:
                 base_config["algorithms"]["heuristics"] = list(heuristics_override)
             if disable_ilp:
@@ -97,10 +125,10 @@ def run_with_timing(
                     rep_dir.mkdir(parents=True, exist_ok=True)
                     rep_config = dict(base_config)
                     rep_config["flows"] = dict(base_config["flows"])
-                    rep_config["flows"]["seed"] = spec.flow_seed + rep
+                    rep_config["flows"]["seed"] = flow_seed_base + rep
                     rep_cfg_path = rep_dir / "config.yaml"
                     suite._dump_yaml(rep_cfg_path, rep_config)
-                    df_list.append(_run_one_rep(rep_cfg_path, cfg_dir, spec.slug, k_paths, rep))
+                    df_list.append(_run_one_rep(rep_cfg_path, cfg_dir, spec_slug, k_paths, rep))
             else:
                 # Параллельно по rep
                 rep_tasks = []
@@ -109,10 +137,10 @@ def run_with_timing(
                     rep_dir.mkdir(parents=True, exist_ok=True)
                     rep_config = dict(base_config)
                     rep_config["flows"] = dict(base_config["flows"])
-                    rep_config["flows"]["seed"] = spec.flow_seed + rep
+                    rep_config["flows"]["seed"] = flow_seed_base + rep
                     rep_cfg_path = rep_dir / "config.yaml"
                     suite._dump_yaml(rep_cfg_path, rep_config)
-                    rep_tasks.append((rep_cfg_path, cfg_dir, spec.slug, k_paths, rep))
+                    rep_tasks.append((rep_cfg_path, cfg_dir, spec_slug, k_paths, rep))
                 with ProcessPoolExecutor(max_workers=workers) as ex:
                     futures = [
                         ex.submit(_run_one_rep, *task)
@@ -140,6 +168,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Серия экспериментов с измерением времени")
     parser.add_argument("-o", "--output", type=Path, required=True, help="Каталог для результатов")
     parser.add_argument("--include", nargs="+", help="Список slug'ов сценариев")
+    parser.add_argument(
+        "--config",
+        type=Path,
+        help="Использовать конкретный config.yaml (ручные потоки и кастомные топологии)",
+    )
     parser.add_argument("--workers", type=int, default=1, help="Число параллельных воркеров (processes)")
     parser.add_argument("--repetitions", type=int, default=10, help="Число повторов на сценарий")
     parser.add_argument(
@@ -204,6 +237,7 @@ def main() -> None:
     run_with_timing(
         args.output,
         include=args.include,
+        config_path=args.config,
         repetitions=args.repetitions,
         workers=args.workers,
         k_paths_override=tuple(args.k_paths) if args.k_paths else None,

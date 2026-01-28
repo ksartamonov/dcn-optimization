@@ -34,7 +34,7 @@ if __package__ in (None, ""):
         run_algorithms,
         scale_flows,
     )
-    from netcalc_dc.flows import generate_flows  # type: ignore
+    from netcalc_dc.flows import flows_from_config  # type: ignore
     from netcalc_dc import router  # type: ignore
 else:
     from .evaluate import (
@@ -44,7 +44,7 @@ else:
         run_algorithms,
         scale_flows,
     )
-    from .flows import generate_flows
+    from .flows import flows_from_config
     from . import router
 
 
@@ -56,9 +56,9 @@ def summarize_routes(
     cfg = load_config(config_path)
     graph = build_topology(cfg.topology)
 
-    base_flows = generate_flows(
+    base_flows = flows_from_config(
+        cfg.flows,
         list(graph.nodes),
-        cfg.flows["count"],
         seed=cfg.flows.get("seed"),
     )
 

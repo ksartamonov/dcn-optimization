@@ -20,7 +20,7 @@ if __package__ in (None, ""):
         scale_flows,
         run_algorithms,
     )
-    from netcalc_dc.flows import generate_flows  # type: ignore
+    from netcalc_dc.flows import flows_from_config  # type: ignore
 else:
     from .evaluate import (
         load_config,
@@ -29,7 +29,7 @@ else:
         scale_flows,
         run_algorithms,
     )
-    from .flows import generate_flows
+    from .flows import flows_from_config
 
 
 def collect_routes(
@@ -45,7 +45,7 @@ def collect_routes(
     target_load = load_factor or load_factors[0]
 
     base_seed = cfg.flows.get("seed", 0)
-    flows = generate_flows(list(graph.nodes), cfg.flows["count"], seed=base_seed)
+    flows = flows_from_config(cfg.flows, list(graph.nodes), seed=base_seed)
     candidates = build_candidates(graph, flows, cfg.evaluation.get("k_paths", 5))
     scaled = scale_flows(flows, target_load)
     assignments = run_algorithms(graph, scaled, candidates, cfg.algorithms)

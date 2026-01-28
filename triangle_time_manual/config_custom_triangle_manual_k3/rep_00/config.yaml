@@ -1,0 +1,56 @@
+topology:
+  type: custom
+  path: configs/custom_topology.json
+flows:
+  manual:
+  - id: flow_0
+    source: node0
+    target: node1
+    rate: 1.0
+    burst: 0.5
+    sla: 5.0
+  - id: flow_1
+    source: node0
+    target: node2
+    rate: 1.0
+    burst: 0.5
+    sla: 5.0
+  - id: flow_2
+    source: node1
+    target: node0
+    rate: 1.0
+    burst: 0.5
+    sla: 5.0
+  - id: flow_3
+    source: node1
+    target: node2
+    rate: 1.0
+    burst: 0.5
+    sla: 5.0
+  - id: flow_4
+    source: node2
+    target: node0
+    rate: 1.0
+    burst: 0.5
+    sla: 5.0
+  - id: flow_5
+    source: node2
+    target: node1
+    rate: 1.0
+    burst: 0.5
+    sla: 5.0
+  seed: 0
+algorithms:
+  heuristics:
+  - greedy
+  - local_search
+  - grasp
+  - ga
+  ilp:
+    enabled: true
+    timeout: 60
+evaluation:
+  repetitions: 1
+  load_factors:
+  - 1.0
+  k_paths: 3

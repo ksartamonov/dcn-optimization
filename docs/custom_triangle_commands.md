@@ -11,12 +11,29 @@ python3 scripts/route_samples.py \
   --flows 3
 ```
 
+## 1b) Quick route samples with manual flows
+```bash
+python3 scripts/route_samples.py \
+  --config configs/config_custom_triangle_manual.yaml \
+  --output triangle_routes_manual \
+  --load-factor 1.0 \
+  --flows 6
+```
+
 ## 2) Print example routes to terminal
 ```bash
 python3 scripts/inspect_routes.py \
   --config configs/config_custom_triangle.yaml \
   --load-factor 0.3 \
   --flows-limit 3
+```
+
+## 2b) Print example routes (manual flows)
+```bash
+python3 scripts/inspect_routes.py \
+  --config configs/config_custom_triangle_manual.yaml \
+  --load-factor 1.0 \
+  --flows-limit 6
 ```
 
 ## 3) One quick experiment run (metrics)
@@ -41,3 +58,11 @@ python3 scripts/time_suite.py \
   --k-paths 3
 ```
 
+## 4b) Timing run with manual flows (config)
+```bash
+python3 scripts/time_suite.py \
+  -o triangle_time_manual \
+  --config configs/config_custom_triangle_manual.yaml \
+  --repetitions 1 \
+  --workers 2
+```

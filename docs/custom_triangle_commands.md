@@ -52,10 +52,10 @@ python3 scripts/suite.py \
 python3 scripts/time_suite.py \
   -o triangle_time \
   --include custom_custom_triangle \
-  --repetitions 1 \
-  --workers 2 \
-  --loads 0.3 \
-  --k-paths 3
+  --repetitions 5 \
+  --workers 10 \
+  --k-paths 3 \
+  --heuristics greedy local_search
 ```
 
 ## 4b) Timing run with manual flows (config)

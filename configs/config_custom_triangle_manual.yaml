@@ -7,37 +7,37 @@ flows:
     - id: flow_0
       source: node0
       target: node1
-      rate: 1.0
+      rate: 1.8
       burst: 0.5
       sla: 5.0
     - id: flow_1
       source: node0
       target: node2
-      rate: 1.0
+      rate: 1.8
       burst: 0.5
       sla: 5.0
     - id: flow_2
       source: node1
       target: node0
-      rate: 1.0
+      rate: 1.8
       burst: 0.5
       sla: 5.0
     - id: flow_3
       source: node1
       target: node2
-      rate: 1.0
+      rate: 1.8
       burst: 0.5
       sla: 5.0
     - id: flow_4
       source: node2
       target: node0
-      rate: 1.0
+      rate: 1.8
       burst: 0.5
       sla: 5.0
     - id: flow_5
       source: node2
       target: node1
-      rate: 1.0
+      rate: 1.8
       burst: 0.5
       sla: 5.0
 

@@ -8,37 +8,37 @@
     {
       "u": "node0",
       "v": "node1",
-      "capacity": 10.0,
+      "capacity": 2.0,
       "latency": 0.2
     },
     {
       "u": "node1",
       "v": "node0",
-      "capacity": 10.0,
+      "capacity": 2.0,
       "latency": 0.2
     },
     {
       "u": "node1",
       "v": "node2",
-      "capacity": 10.0,
+      "capacity": 2.0,
       "latency": 0.2
     },
     {
       "u": "node2",
       "v": "node1",
-      "capacity": 10.0,
+      "capacity": 2.0,
       "latency": 0.2
     },
     {
       "u": "node2",
       "v": "node0",
-      "capacity": 10.0,
+      "capacity": 2.0,
       "latency": 0.2
     },
     {
       "u": "node0",
       "v": "node2",
-      "capacity": 10.0,
+      "capacity": 2.0,
       "latency": 0.2
     }
   ]

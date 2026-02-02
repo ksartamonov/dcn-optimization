@@ -52,10 +52,10 @@ python3 scripts/suite.py \
 python3 scripts/time_suite.py \
   -o triangle_time \
   --include custom_custom_triangle \
-  --repetitions 5 \
-  --workers 10 \
-  --k-paths 3 \
-  --heuristics greedy local_search
+  --repetitions 1 \
+  --workers 2 \
+  --loads 0.3 \
+  --k-paths 3
 ```
 
 ## 4b) Timing run with manual flows (config)
@@ -65,4 +65,14 @@ python3 scripts/time_suite.py \
   --config configs/config_custom_triangle_manual.yaml \
   --repetitions 1 \
   --workers 2
+```
+
+## 5) Delay vs load curve for a single flow
+```bash
+python3 scripts/flow_delay_curve.py \
+  --config configs/config_custom_triangle_manual.yaml \
+  --algorithm ga \
+  --flow-id flow_0 \
+  --loads 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 \
+  -o triangle_delay_curve.png
 ```
